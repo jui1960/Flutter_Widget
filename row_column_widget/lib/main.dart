@@ -50,18 +50,49 @@ class _MyHomePageState extends State<MyHomePage> {
 
       //children: <Text>[ er mane sudu texxt  widget newa jabe
 
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Text('a',style: TextStyle(fontSize: 20),),
-              Text('b',style: TextStyle(fontSize: 40),),
-              Text('c',style: TextStyle(fontSize: 7),),
-              Text('d',style: TextStyle(fontSize: 20),),
-              Text('e',style: TextStyle(fontSize: 500),),
-          ElevatedButton(onPressed: (){
+      // body: Container(
+      //   height: 300,
+      //   child: Row(
+      //
+      //       // mainAxisAlignment: MainAxisAlignment.spaceEvenly, sobsight a
+      //       // mainAxisAlignment: MainAxisAlignment.spaceAround,
+      //       mainAxisAlignment: MainAxisAlignment.center,
+      //       crossAxisAlignment: CrossAxisAlignment.center,
+      //
+      //       children: [
+      //         Text('a',style: TextStyle(fontSize: 20),),
+      //         Text('b',style: TextStyle(fontSize: 14),),
+      //         Text('c',style: TextStyle(fontSize: 17),),
+      //         Text('d',style: TextStyle(fontSize: 20),),
+      //         Text('e',style: TextStyle(fontSize: 15),),
+      //         ElevatedButton(onPressed: (){
+      //
+      //         }, child: Text('click me'))
+      //       ],
+      //   ),
 
-          }, child: Text('click me'))
-        ],
+
+
+      body: Container(
+        height: 300,
+        child: Column(
+
+          // mainAxisAlignment: MainAxisAlignment.spaceEvenly, sobsight a
+          // mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+
+          children: [
+            Text('a',style: TextStyle(fontSize: 20),),
+            Text('b',style: TextStyle(fontSize: 20),),
+            Text('c',style: TextStyle(fontSize: 20),),
+            Text('d',style: TextStyle(fontSize: 20),),
+            Text('e',style: TextStyle(fontSize: 20),),
+            ElevatedButton(onPressed: (){
+
+            }, child: Text('click me',style: TextStyle(fontSize: 30,color: Colors.grey),))
+          ],
+        ),
       ),
     );
   }
