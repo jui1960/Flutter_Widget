@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
 
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Flutter'),
     );
   }
 }
@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body:Center(
         child: Container(
-          child: Center(child: Text("hello mafi")),
+          child: Center(child: Text("this is container weidget")),
           height: 400,
           width: 200,
           decoration: BoxDecoration(
