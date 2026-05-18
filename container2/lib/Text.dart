@@ -45,34 +45,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(
+        appBar: AppBar(
 
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
 
-        title: Text(widget.title),
-      ),
-      body:Center(
-        child: Container(
-          child: Center(child: Text("this is container weidget",
-            style: TextStyle(color: Colors.amberAccent),)),
-          height: 400,
-          width: 200,
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.black, width: 3),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: Offset(0, 3),),
-            ],
-          ),
-
+          title: Text(widget.title),
         ),
-      )
-      
+        body:Center(child: Text("This is my first text weidget",style: TextStyle(fontSize: 25,fontWeight:FontWeight.w800,backgroundColor: Colors.blue ,color: Colors.red),))
+
     );
   }
 }
