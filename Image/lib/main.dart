@@ -93,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
 
           padding: EdgeInsets.all(20),
-          height: 300,
+          height: 200,
           width: 300,
           child: Center(
             child: Image.asset('assets/images/android.png', height: 300),
