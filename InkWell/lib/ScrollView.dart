@@ -24,6 +24,7 @@ class scrollView extends StatelessWidget {
                   child: Row(
                     children: [
                       Container(
+
                         decoration: BoxDecoration(
                           color: Colors.amber,
                           borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -32,6 +33,10 @@ class scrollView extends StatelessWidget {
                         height: 200,
                         width: 200,
 
+                        child: Image.asset(
+                            'assets/images/android.png', height: 100,
+                            width: 100,
+                           ),
 
 
                       ),
@@ -43,6 +48,10 @@ class scrollView extends StatelessWidget {
                         margin: EdgeInsets.only(right: 11),
                         height: 200,
                         width: 200,
+                        child:Image.asset(
+                          'assets/images/apple.png', height: 100,
+                          width: 100,
+                        ),
 
 
 
@@ -97,10 +106,15 @@ class scrollView extends StatelessWidget {
 
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                   ),
+                  child: Image.asset(
+                    'assets/images/android.png', height: 100,
+                    width: 100,
+                  ),
+
 
                   margin: EdgeInsets.only(bottom: 11),
                   height: 200,
-                  /*      width: 200,*/
+                        width: 600,
                 ),
                 Container(
                   decoration: BoxDecoration(
