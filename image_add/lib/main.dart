@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Container(
             width: 100,
             height: 100,
-            child: Image.asset('asset/images/bpi.png'),
+            child: Image.asset('assets/images/bpi.jpg'),
           )
 
       )

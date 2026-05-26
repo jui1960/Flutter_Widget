@@ -15,8 +15,9 @@ class RowColumn extends StatelessWidget {
       home: Scaffold(
         body: Center(
           child: Container(
+
             color: Colors.grey,
-            height: 400,
+
             width: 400,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -32,6 +33,7 @@ class RowColumn extends StatelessWidget {
                       Text('d'),
                       Text('e'),
                     ],
+
                   ),
                 ),
 
@@ -44,7 +46,8 @@ class RowColumn extends StatelessWidget {
                       Text('b'),
                       Text('c'),
                       Text('d'),
-                      Text('e'),
+                      Image.asset('assets/image/android.png',height: 300,width: 200,fit: BoxFit.cover),
+                      Text('e')
                     ],
                   ),
                 ),

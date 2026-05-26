@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-
+void main() {
+  runApp(const MaterialApp(
+    home: ColumnScreen(),
+  ));
+}
 class ColumnScreen extends StatelessWidget {
   const ColumnScreen({super.key});
 
