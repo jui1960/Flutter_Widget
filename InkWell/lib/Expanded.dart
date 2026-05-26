@@ -19,7 +19,7 @@ class expanded extends StatelessWidget {
               child: Container(
                 margin: EdgeInsets.all(10),
                 height: 100,
-                width: 50,
+                width: 52,
                 color: Colors.amber,
               ),
             ),

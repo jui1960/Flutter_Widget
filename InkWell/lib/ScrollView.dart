@@ -26,7 +26,7 @@ class scrollView extends StatelessWidget {
                       Container(
 
                         decoration: BoxDecoration(
-                          color: Colors.amber,
+                          color: Colors.brown,
                           borderRadius: BorderRadius.all(Radius.circular(20)),
                         ),
                         margin: EdgeInsets.only(right: 11),
