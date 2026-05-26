@@ -34,7 +34,7 @@ class scrollView extends StatelessWidget {
                         width: 200,
 
                         child: Image.asset(
-                            'assets/images/android.png', height: 100,
+                            'assets/images/android.png', height: 90,
                             width: 100,
                            ),
 
