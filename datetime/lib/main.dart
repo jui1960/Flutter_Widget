@@ -90,13 +90,21 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Container(
           width: 200,
           height: 200,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.grey
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("current time ${time.hour}:${time.month}:${time.second}",style: TextStyle(fontSize: 20),),
+              Text("current time \n ${time.hour}:${time.month}:${time.second}",style: TextStyle(fontSize: 20),),
+              SizedBox(height: 20,),
               ElevatedButton(onPressed: (){
                 setState((){});
-              }, child: Text("Get Time"))
+              }, child: Text("Get Time"),style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+              ),)
             ],
           ),
         ),
