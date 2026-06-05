@@ -24,7 +24,8 @@ class font extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(18.0),
               child: Text(
-                'Hello,I am Jannati Akter Jui, I am learing Flutter',
+                'Hello,I amc'
+                    ' Jannati Akter Jui, I am learing Flutter',
                 style: TextStyle(fontFamily: 'PlayFont',
                     fontSize: 20,
                     fontWeight: FontWeight.bold),
