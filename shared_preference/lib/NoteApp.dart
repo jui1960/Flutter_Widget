@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'NoteListScreeN.dart';
 import 'SplashScreen.dart';
 
 void main() {
@@ -27,116 +28,111 @@ class NoteApp extends StatefulWidget {
 class _NoteAppStateApp extends State<NoteApp> {
   var _Controller = TextEditingController();
   var _subController = TextEditingController();
-  var noteValue = "No note saved";
   List<String> notes = [];
 
-  @override
-  void initState() {
-    super.initState();
+  String? _TitileError;
+  String? _SubTitleError;
 
-    showNote();
-  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Container(
-          width: 350,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(height: 60),
+            width: 350,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(height: 60),
 
-              Text(
-                'Nota App',
-                style: TextStyle(
-                  fontSize: 30,
-                  color: Colors.cyan,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 50),
-              TextField(
-                controller: _Controller,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
+                  Text(
+                    'Nota App',
+                    style: TextStyle(
+                      fontSize: 30,
+                      color: Colors.cyan,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  hintText: "Enter your note",
-                ),
-              ),
-              SizedBox(height: 20),
-              TextField(
-                controller: _subController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  hintText: "Enter your Subtitle",
-                ),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                ),
-                onPressed: () async {
-                  var note = _Controller.text.toString();
-                  var subtitle = _subController.text.toString();
+                  SizedBox(height: 50),
+                  TextField(
 
-                  var pref = await SharedPreferences.getInstance();
-                  var concat = '$note##$subtitle';
-                  notes.add(concat);
-                  pref.setStringList('Value', notes);
-                  setState(() {
-                    _Controller.clear();
-                    _subController.clear();
-                  });
-                },
-                child: Text('SAVE'),
-              ),
-              SizedBox(height: 20),
-              Expanded(
-                child: notes.isEmpty
-                    ? Text(noteValue)
-                    : ListView.builder(
+                    controller: _Controller,
 
-                        itemBuilder: (context, index) {
-                          var split = notes[index].split('##');
-                          var noteTitle = split[0];
-                          var subtitle = split[1];
-                          return Card(
-
-                            margin: EdgeInsets.all(10),
-                            color: Colors.cyan.shade200,
-                            elevation: 10,
-                            child: ListTile(
-                              leading: CircleAvatar(
-                                child: Text('${index + 1}'),
-                              ),
-                              title: Text(noteTitle),
-                              subtitle: Text(subtitle),
-                              trailing: Icon(Icons.delete),
-                            ),
-                          );
-                        },
-                        itemCount: notes.length,
+                    decoration: InputDecoration(
+                      errorText: _TitileError,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
                       ),
-              ),
-            ],
-          ),
+                      hintText: "Enter your note",
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  TextField(
+                    controller: _subController,
+                    decoration: InputDecoration(
+                      errorText: _SubTitleError,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      hintText: "Enter your Subtitle",
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                    ),
+                    onPressed: () async {
+                      var note = _Controller.text.toString();
+                      var subtitle = _subController.text.toString();
+
+                      setState(() {
+                        _TitileError = null;
+                        _SubTitleError = null;
+                      });
+                      if (note.isEmpty || subtitle.isEmpty) {
+                        if (note.isEmpty) {
+                          _TitileError = 'Please fill up Note';
+                        }
+                        if (subtitle.isEmpty) {
+                          _SubTitleError = 'Please fill up SubTitle';
+                        }
+
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Please fill all feild'),)
+                        );
+                        return;
+                      }
+
+
+                      var pref = await SharedPreferences.getInstance();
+                      notes = pref.getStringList('value') ?? [];
+
+                      var concat = ('$note##$subtitle');
+                      notes.add(concat);
+
+                      pref.setStringList('value', notes);
+
+                      _Controller.clear();
+                      _subController.clear();
+
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => NoteListScreen()));
+                    },
+
+                    child: Text('SAVE'),
+                  ),
+                  SizedBox(height: 20),
+                ])
+
+
         ),
       ),
+
     );
   }
-
-  void showNote() async {
-    var pref = await SharedPreferences.getInstance();
-    var showPref = pref.getStringList('Value');
-    notes = showPref != null ? showPref : [];
-    noteValue = notes.isEmpty ? 'No note saved' : "";
-    setState(() {});
-  }
 }
+
