@@ -9,12 +9,11 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> noteList = [];
-  DbHelper? dbref;
+  DbHelper dbref = DbHelper.getInstance;
 
   @override
   void initState() {
     super.initState();
-    dbref = DbHelper.getInstance;
     getData();
   }
 
@@ -37,7 +36,7 @@ class HomePageState extends State<HomePage> {
           : Center(child: Text('No note yet')),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          bool chek = await dbref!.addNote(
+          bool chek = await dbref.addNote(
             Mtitle: 'personal note',
             Mdetails: 'my favoutite fruit is apple',
           );
@@ -51,7 +50,7 @@ class HomePageState extends State<HomePage> {
   }
 
   void getData() async {
-    noteList = await dbref!.FetchAllNote();
+    noteList = await dbref.FetchAllNote();
     setState(() {});
   }
 }

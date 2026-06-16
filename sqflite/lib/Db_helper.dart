@@ -6,16 +6,21 @@ import 'package:sqflite/sqflite.dart';
 
 class DbHelper{
 
-  DbHelper._();
 
+
+  // ১. প্রাইভেট কনস্ট্রাক্টর (যাতে বাইরে থেকে এই ক্লাসের অবজেক্ট তৈরি করা না যায়)
+  DbHelper._();
   //static final ektdhoroner instane,, class er object create kora sarai access kora jai..singletone
+
   static final DbHelper getInstance = DbHelper._();
+
+
   static final TABLE_NOTE = 'note';
   static final COLUMN_SERIAL_NO = 'a_no';
   static final COLUMN_NOTE_TITLe = 'title';
   static final COLUMN_NOTE_DESC = 'details';
 
-
+// ৪. ডাটাবেজ অবজেক্ট হোল্ডার (শুরুতে এটি null থাকবে)
   Database? myDb;
 
     Future<Database>  getDb() async{
@@ -32,8 +37,10 @@ class DbHelper{
   }
 
   Future<Database> openDb() async{
+      // ফোনের ভেতরে অ্যাপের জন্য নিরাপদ ডিরেক্টরি বা ফোল্ডার খুঁজে বের করা
      Directory appDir = await getApplicationDocumentsDirectory();
      String dbpath = join(appDir.path,"noteDb");
+     // ডাটাবেজ ওপেন করা (প্রথমবার হলে onCreate রান হবে)
      return await openDatabase(
        dbpath,
        version: 1,
@@ -53,7 +60,7 @@ class DbHelper{
       COLUMN_NOTE_TITLe: Mtitle,
       COLUMN_NOTE_DESC: Mdetails
     });
-    return rowsEffected > 0;
+    return rowsEffected > 0;//সফলভাবে ইনসার্ট হলে true, নাহলে false রিটার্ন করবে
   }
 
   //fetch data\
