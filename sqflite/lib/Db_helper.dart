@@ -60,7 +60,7 @@ class DbHelper{
       COLUMN_NOTE_TITLe: Mtitle,
       COLUMN_NOTE_DESC: Mdetails
     });
-    return rowsEffected > 0;//সফলভাবে ইনসার্ট হলে true, নাহলে false রিটার্ন করবে
+    return rowsEffected > 0;
   }
 
   //fetch data\

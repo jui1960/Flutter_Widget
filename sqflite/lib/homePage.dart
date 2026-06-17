@@ -33,7 +33,7 @@ class HomePageState extends State<HomePage> {
                 );
               },
             )
-          : Center(child: Text('No note yet')),
+          : Center(child: Text('No note yet',style: TextStyle(fontSize: 20,color: Colors.black,fontWeight: FontWeight.bold),)),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           bool chek = await dbref.addNote(
