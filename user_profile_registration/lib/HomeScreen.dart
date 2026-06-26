@@ -3,8 +3,40 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Login.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String displayName = 'User';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUsername();
+  }
+
+  void _loadUsername() async {
+    var pref = await SharedPreferences.getInstance();
+    setState(() {
+      displayName = pref.getString(LoginScreenState.USERNAME_KEY) ?? 'User';
+    });
+  }
+
+  void _logout() async {
+    var pref = await SharedPreferences.getInstance();
+    await pref.clear();
+
+    if (context.mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +48,6 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -24,7 +55,7 @@ class HomeScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Hello, User! 👋',
+                        'Hello, $displayName! 👋',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -55,9 +86,7 @@ class HomeScreen extends StatelessWidget {
                           onPressed: () {},
                         ),
                       ),
-
                       const SizedBox(width: 10),
-
                       Container(
                         decoration: BoxDecoration(
                           color: const Color(0xFF6A1B29).withOpacity(0.1),
@@ -65,14 +94,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         child: IconButton(
                           icon: const Icon(Icons.logout, color: Color(0xFF6A1B29)),
-                          onPressed: () async {
-                            var pref = await SharedPreferences.getInstance();
-                            pref.setBool(LoginScreenState.LOGIN_KEY, false);
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => const LoginScreen()),
-                            );
-                          },
+                          onPressed: _logout,
                         ),
                       ),
                     ],
@@ -120,43 +142,14 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _buildMiniStatus('Active Tasks', '12'),
-                        _buildMiniStatus('Completed', '48'),
-                      ],
-                    ),
+                    
+                    Text('All user : ',style: TextStyle(color: Colors.white.withOpacity(0.7),fontSize: 14,fontWeight: FontWeight.w500),)
+
                   ],
                 ),
               ),
-              const SizedBox(height: 32),
 
-              // ৩. সেকশন টাইটেল
-              const Text(
-                'Quick Features',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF1A1A2E),
-                ),
-              ),
-              const SizedBox(height: 16),
 
-              GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(), // Scroll কনফ্লিক্ট এড়ানোর জন্য
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 1.2,
-                children: [
-                  _buildMenuCard(Icons.analytics_outlined, 'Analytics'),
-                  _buildMenuCard(Icons.history_toggle_off_rounded, 'History'),
-                  _buildMenuCard(Icons.assignment_outlined, 'Tasks'),
-                  _buildMenuCard(Icons.settings_outlined, 'Settings'),
-                ],
-              ),
             ],
           ),
         ),
@@ -164,57 +157,5 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  static Widget _buildMiniStatus(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 12)),
-        const SizedBox(height: 4),
-        Text(value, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-      ],
-    );
-  }
 
-  static Widget _buildMenuCard(IconData icon, String title) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey[200]!),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: () {},
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF6A1B29).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(icon, color: const Color(0xFF6A1B29), size: 28),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A1A2E),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
