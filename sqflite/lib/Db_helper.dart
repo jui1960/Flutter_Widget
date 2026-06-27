@@ -15,7 +15,7 @@ class DbHelper{
   static final DbHelper getInstance = DbHelper._();
 
 
-  static final TABLE_NOTE = 'note';
+  static final TABLE_NAME = 'note';
   static final COLUMN_SERIAL_NO = 'a_no';
   static final COLUMN_NOTE_TITLe = 'title';
   static final COLUMN_NOTE_DESC = 'details';
@@ -46,7 +46,7 @@ class DbHelper{
        version: 1,
        onCreate: (db, version) {
          db.execute(
-             "create table $TABLE_NOTE ($COLUMN_SERIAL_NO integer primary key autoincrement,$COLUMN_NOTE_TITLe text,$COLUMN_NOTE_DESC text)");
+             "create table $TABLE_NAME ($COLUMN_SERIAL_NO integer primary key autoincrement,$COLUMN_NOTE_TITLe text,$COLUMN_NOTE_DESC text)");
        },
      );
   }
@@ -56,7 +56,7 @@ class DbHelper{
   Future<bool> addNote(
       {required String Mtitle, required String Mdetails}) async {
     var db = await getDb();
-    int rowsEffected = await db.insert(TABLE_NOTE, {
+    int rowsEffected = await db.insert(TABLE_NAME, {
       COLUMN_NOTE_TITLe: Mtitle,
       COLUMN_NOTE_DESC: Mdetails
     });
@@ -68,7 +68,7 @@ class DbHelper{
   Future<List<Map<String, dynamic>>> FetchAllNote() async {
     var db = await getDb();
     //select from note
-    List<Map<String, dynamic>> mData = await db.query(TABLE_NOTE);
+    List<Map<String, dynamic>> mData = await db.query(TABLE_NAME);
     return mData;
   }
 
