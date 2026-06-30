@@ -72,6 +72,27 @@ class DbHelper{
     return mData;
   }
 
+  //update data
+  Future<bool> updateData(
+      {required String mtitle, required String mdes, required int sno }) async {
+    var db = await getDb();
+    int rowsEffected = await db.update(TABLE_NAME, {
+      COLUMN_NOTE_TITLe: mtitle,
+      COLUMN_NOTE_DESC: mdes
+    }, where: "$COLUMN_SERIAL_NO = $sno");
+    return rowsEffected > 0;
+  }
+
+
+  //delete data
+  Future<bool> deleteData({required int sno}) async {
+    var db = await getDb();
+    int rowseffect = await db.delete(TABLE_NAME,
+        where: "$COLUMN_SERIAL_NO = ? ", whereArgs: [sno]);
+    return rowseffect > 0;
+  }
+
+
 
 
 }
