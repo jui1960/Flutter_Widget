@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:user_profile_registration/AddUser.dart';
+import 'package:user_profile_registration/Db_helper.dart';
 
 import 'Login.dart';
 
@@ -12,12 +14,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String displayName = 'User';
+  List<Map<String, dynamic>> userList = [];
+  DbHelper dbRef = DbHelper.getInstance;
 
   @override
   void initState() {
     super.initState();
     _loadUsername();
+    loadUser();
   }
+
 
   void _loadUsername() async {
     var pref = await SharedPreferences.getInstance();
@@ -38,10 +44,19 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void loadUser() async {
+    userList = await dbRef.FetchAllNote();
+    setState(() {
+
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
+
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
@@ -134,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      'All Systems Nominal',
+                      'Employee Details tracker',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 24,
@@ -142,18 +157,98 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    
-                    Text('All user : ',style: TextStyle(color: Colors.white.withOpacity(0.7),fontSize: 14,fontWeight: FontWeight.w500),)
+
+                    Text('All user : ${userList.length} ', style: TextStyle(
+                        color: Colors.white.withOpacity(0.7),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),),
 
                   ],
+
+
                 ),
+
               ),
+              SizedBox(height: 30,),
+              userList.isEmpty ? const Center(child: Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: Text(
+                    'No users found!', style: TextStyle(color: Colors.grey)),
+              )) : ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: userList.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      clipBehavior: Clip.antiAlias,
+                      color: Color(0xFF5A1B24),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                            backgroundColor: Colors.greenAccent,
+                            child: const Icon(Icons.person,
+                                color: Colors.white)),
+                        title: Text(
+                          userList[index][DbHelper.COLUMN_USER_NAME] ?? '',
+                          style: const TextStyle(color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          userList[index][DbHelper.COLUMN_EMAIL] ?? '',
+                          style: const TextStyle(color: Colors.white70),
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(onPressed: () {},
+                                icon: const Icon(
+                                    Icons.edit, color: Colors.greenAccent)),
+                            IconButton(onPressed: () async {
+                              int id = userList[index][DbHelper.COLUMN_ID];
+
+                              bool isDelete = await dbRef.deleteData(id: id);
+
+                              if (isDelete) {
+                                loadUser();
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text(
+                                        'User deleted successfully!')),
+                                  );
+                                }
+                              }
+                            },
+                                icon: const Icon(
+                                    Icons.delete, color: Colors.red)),
+                          ],
+                        ),
+                      ),
+                    );
+                  })
 
 
-            ],
+            ]
+
+
           ),
+
         ),
+
       ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: FloatingActionButton(
+          backgroundColor: Colors.purple,
+          onPressed: () {
+            Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const Adduser()),).then((
+                value) {
+              loadUser();
+            });
+          },
+          child: const Icon(Icons.add, color: Colors.white),),
+      ),
+
+
     );
   }
 
