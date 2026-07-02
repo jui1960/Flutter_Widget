@@ -199,7 +199,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            IconButton(onPressed: () {},
+                            IconButton(onPressed: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) =>
+                                      Adduser(user: userList[index]),)).then((value) => loadUser());
+                            },
                                 icon: const Icon(
                                     Icons.edit, color: Colors.greenAccent)),
                             IconButton(onPressed: () async {
@@ -237,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(8.0),
         child: FloatingActionButton(
-          backgroundColor: Colors.purple,
+          backgroundColor: Color(0xFF5A1B24),
           onPressed: () {
             Navigator.push(context,
               MaterialPageRoute(builder: (context) => const Adduser()),).then((

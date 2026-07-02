@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:user_profile_registration/Db_helper.dart';
 
 class Adduser extends StatefulWidget {
-  const Adduser({super.key});
+  final Map<String, dynamic>? user;
+
+  const Adduser({super.key, this.user});
 
   @override
   State<StatefulWidget> createState() => AdduserState();
@@ -14,6 +16,20 @@ class AdduserState extends State<Adduser> {
   var addressController = TextEditingController();
 
   DbHelper dbRef = DbHelper.getInstance;
+  bool isEdit = false;
+
+  @override
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.user != null) {
+      isEdit = true;
+      userNameController.text = widget.user![DbHelper.COLUMN_USER_NAME] ?? '';
+      emailController.text = widget.user![DbHelper.COLUMN_EMAIL] ?? '';
+      addressController.text = widget.user![DbHelper.COLUMN_ADDRESS] ?? '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,18 +77,28 @@ class AdduserState extends State<Adduser> {
                   var address = addressController.text;
 
                   if (name.isNotEmpty && email.isNotEmpty) {
-                    bool isSaved = await dbRef.addNote(
-                      mName: name,
-                      mEmail: email,
-                      mAddress: address,
-                    );
+                    bool success = false;
+                    if (isEdit) {
+                      int id = widget.user![DbHelper.COLUMN_ID];
+                      success = await dbRef.updateData(
+                          mName: name, mEmail: email, mAddress: address, id: id);
+                    }
+                    else{
+                      success = await dbRef.addNote(
+                        mName: name,
+                        mEmail: email,
+                        mAddress: address,
+                      );
 
-                    if (isSaved && mounted) {
+                    }
+
+                    if (success && mounted) {
                       Navigator.pop(context);
                     }
                   }
                 },
-                child: const Text(
+                child: Text(
+                  isEdit ? 'Update User' :
                   'Save User',
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
