@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:user_profile_registration/AddUser.dart';
 import 'package:user_profile_registration/Db_helper.dart';
 
+import 'DetailsScreen.dart';
 import 'Login.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -179,51 +180,61 @@ class _HomeScreenState extends State<HomeScreen> {
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: userList.length,
                   itemBuilder: (context, index) {
-                    return Card(
-                      clipBehavior: Clip.antiAlias,
-                      color: Color(0xFF5A1B24),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                            backgroundColor: Colors.greenAccent,
-                            child: const Icon(Icons.person,
-                                color: Colors.white)),
-                        title: Text(
-                          userList[index][DbHelper.COLUMN_USER_NAME] ?? '',
-                          style: const TextStyle(color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(
-                          userList[index][DbHelper.COLUMN_EMAIL] ?? '',
-                          style: const TextStyle(color: Colors.white70),
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) =>
-                                      Adduser(user: userList[index]),)).then((value) => loadUser());
-                            },
-                                icon: const Icon(
-                                    Icons.edit, color: Colors.greenAccent)),
-                            IconButton(onPressed: () async {
-                              int id = userList[index][DbHelper.COLUMN_ID];
+                    return InkWell(
+                      onTap: (){
 
-                              bool isDelete = await dbRef.deleteData(id: id);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => DetailsScreen(
+                          user: userList[index],
+                        ),));
 
-                              if (isDelete) {
-                                loadUser();
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text(
-                                        'User deleted successfully!')),
-                                  );
+
+                      },
+                      child: Card(
+                        clipBehavior: Clip.antiAlias,
+                        color: Color(0xFF5A1B24),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                              backgroundColor: Colors.greenAccent,
+                              child: const Icon(Icons.person,
+                                  color: Colors.white)),
+                          title: Text(
+                            userList[index][DbHelper.COLUMN_USER_NAME] ?? '',
+                            style: const TextStyle(color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(
+                            userList[index][DbHelper.COLUMN_EMAIL] ?? '',
+                            style: const TextStyle(color: Colors.white70),
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) =>
+                                        Adduser(user: userList[index]),)).then((value) => loadUser());
+                              },
+                                  icon: const Icon(
+                                      Icons.edit, color: Colors.greenAccent)),
+                              IconButton(onPressed: () async {
+                                int id = userList[index][DbHelper.COLUMN_ID];
+
+                                bool isDelete = await dbRef.deleteData(id: id);
+
+                                if (isDelete) {
+                                  loadUser();
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text(
+                                          'User deleted successfully!')),
+                                    );
+                                  }
                                 }
-                              }
-                            },
-                                icon: const Icon(
-                                    Icons.delete, color: Colors.red)),
-                          ],
+                              },
+                                  icon: const Icon(
+                                      Icons.delete, color: Colors.red)),
+                            ],
+                          ),
                         ),
                       ),
                     );

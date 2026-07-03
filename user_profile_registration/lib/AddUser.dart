@@ -34,7 +34,7 @@ class AdduserState extends State<Adduser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add New User')),
+      appBar: AppBar(title: Text(isEdit ? 'Update User' : 'Add New User')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
