@@ -3,6 +3,7 @@ import 'package:note_app/Db_Helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'AddNote.dart';
+import 'Details_Screen.dart';
 import 'Login.dart';
 
 class Homescreen extends StatefulWidget {
@@ -157,75 +158,91 @@ class HomescreenState extends State<Homescreen> {
               child: ListView.builder(
                 itemCount: NoteList.length,
                 itemBuilder: (context, index) {
-                  return Card(
-                    elevation: 3,
-                    margin: const EdgeInsets.only(bottom: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
+                  return InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailsScreen(
+                        note: NoteList[index],
+                      ))).then((value){
+                        if(value == true){
+                          loadNotes();
+                        }
+                      });
+                    },
+                    child: Card(
+                      elevation: 3,
+                      margin: const EdgeInsets.only(bottom: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      leading: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.1),
-                          shape: BoxShape.circle,
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
                         ),
-                        child: const Icon(
-                          Icons.note_alt_rounded,
-                          color: Colors.green,
-                        ),
-                      ),
-                      title: Text(
-                        NoteList[index][DbHelper.COLUMN_TITLE]!,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child: Text(
-                          NoteList[index][DbHelper.COLUMN_SUBTITLE]!,
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 13,
+                        leading: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.green.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.note_alt_rounded,
+                            color: Colors.green,
                           ),
                         ),
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-
-
-                            },
-                            icon: Icon(Icons.edit, color: Colors.green),
+                        title: Text(
+                          NoteList[index][DbHelper.COLUMN_TITLE]!,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
                           ),
-                          IconButton(
-                            onPressed: () async {
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            NoteList[index][DbHelper.COLUMN_SUBTITLE]!,
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                               Navigator.push(context, MaterialPageRoute(builder: (context)=>AddNote(
+                                 note: NoteList[index],
+                               ))).then((value) => loadNotes());
 
-                              int id = NoteList[index][DbHelper.COLUMN_ID];
-                              bool isDelete = await dbRef.deleteData(id: id);
 
-                              if (isDelete) {
-                                loadNotes();
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text(
-                                        'User deleted successfully!')),
-                                  );
+
+
+                              },
+                              icon: Icon(Icons.edit, color: Colors.green),
+                            ),
+                            IconButton(
+                              onPressed: () async {
+
+                                int id = NoteList[index][DbHelper.COLUMN_ID];
+                                bool isDelete = await dbRef.deleteData(id: id);
+
+                                if (isDelete) {
+                                  loadNotes();
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text(
+                                          'Note deleted successfully!')),
+                                    );
+                                  }
                                 }
-                              }
 
-                            },
-                            icon: Icon(Icons.delete, color: Colors.red),
-                          ),
-                        ],
+                              },
+                              icon: Icon(Icons.delete, color: Colors.red),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'Db_Helper.dart';
 
 class AddNote extends StatefulWidget {
-  const AddNote({super.key});
+  final Map<String, dynamic>? note;
+
+  const AddNote({super.key, this.note});
 
   @override
   State<StatefulWidget> createState() => AddNoteState();
@@ -14,13 +16,26 @@ class AddNoteState extends State<AddNote> {
   var subtitleController = TextEditingController();
 
   DbHelper dbRef = DbHelper.getInstance;
+  bool isEdit = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    //edit a kaj amr home screen a jody edit icon click kora hoi taile notelist ar title r subtile field ar value set hobe
+    if (widget.note != null) {
+      isEdit = true;
+      titleController.text = widget.note![DbHelper.COLUMN_TITLE] ?? '';
+      subtitleController.text = widget.note![DbHelper.COLUMN_SUBTITLE] ?? '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Add Note',
+        title: Text(
+          isEdit ? 'Edit Note' : 'Add Note',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -45,7 +60,7 @@ class AddNoteState extends State<AddNote> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 10),
-              const Text(
+               Text( isEdit ? 'Update your note' :
                 'Create New Note',
                 style: TextStyle(
                   fontSize: 22,
@@ -83,9 +98,13 @@ class AddNoteState extends State<AddNote> {
                   border: const OutlineInputBorder(),
                   focusedBorder: const OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.teal, width: 2),
+
                   ),
+
                   labelText: 'Description',
+
                   labelStyle: const TextStyle(color: Colors.teal),
+
                   prefixIcon: Icon(
                     Icons.description_outlined,
                     color: Colors.teal,
@@ -99,15 +118,23 @@ class AddNoteState extends State<AddNote> {
                   var title = titleController.text;
                   var subtitle = subtitleController.text;
                   if (title.isNotEmpty && subtitle.isNotEmpty) {
-                    await dbRef.addNote(mTitle: title, mSubtitle: subtitle);
-                    if (context.mounted) {
+                    bool success = false;
+                    if(isEdit){
+                      int id = widget.note![DbHelper.COLUMN_ID];
+                      success = await dbRef.updateData(mTitle: title, mSubtitle: subtitle, id: id);
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Note Updated Successfully')));
+
+                    }
+                    else{
+                      success = await dbRef.addNote(mTitle: title, mSubtitle: subtitle);
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Note Added Successfully')));
+
+                    }
+                    if(success && mounted){
                       Navigator.pop(context);
                     }
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please fill all fields')),
-                    );
                   }
+
                 },
                 child: Container(
                   width: double.infinity,
@@ -127,8 +154,8 @@ class AddNoteState extends State<AddNote> {
                       ),
                     ],
                   ),
-                  child: const Center(
-                    child: Text(
+                  child: Center(
+                    child: Text( isEdit ? 'Update Note':
                       'Save Note',
                       style: TextStyle(
                         color: Colors.white,
