@@ -4,7 +4,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'HomeScreen.dart';
 import 'SplashScreen.dart';
 
-void main() {
+final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var pref = await SharedPreferences.getInstance();
+  bool isDarkMode = pref.getBool(LoginScreenState.THEME_KEY) ?? false;
+  themeNotifier.value = isDarkMode ? ThemeMode.dark : ThemeMode.light;
+
   runApp(const Login());
 }
 
@@ -13,7 +20,23 @@ class Login extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: Splashscreen());
+    return ValueListenableBuilder<ThemeMode>(valueListenable: themeNotifier, builder: (_,currentMode,__){
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        themeMode: currentMode,
+
+        theme: ThemeData(
+          brightness: Brightness.light,
+          scaffoldBackgroundColor: const Color(0xFFF8F9FA),
+
+        ),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          scaffoldBackgroundColor: const Color(0xFF121212),
+        ),
+        home: Splashscreen(),
+      );
+    });
   }
 }
 
@@ -27,6 +50,7 @@ class LoginScreen extends StatefulWidget {
 class LoginScreenState extends State<LoginScreen> {
   static const String LOGIN_KEY = 'isLogin';
   static const String USERNAME_KEY = 'username';
+  static const String THEME_KEY = 'isDarkMode';
 
   bool isShowPassword = true; //dot dot dekhabe
   var PasswordController = TextEditingController();
@@ -202,7 +226,10 @@ class LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
+
       ),
     );
   }
 }
+
+

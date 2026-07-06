@@ -35,7 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _logout() async {
     var pref = await SharedPreferences.getInstance();
-    await pref.clear();
+    await pref.remove(LoginScreenState.LOGIN_KEY);
+    await pref.remove(LoginScreenState.USERNAME_KEY);
 
     if (context.mounted) {
       Navigator.pushReplacement(
@@ -52,12 +53,26 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _toggleTheme() async {
+    var pref = await SharedPreferences.getInstance();
+    if (themeNotifier.value == ThemeMode.light) {
+      themeNotifier.value = ThemeMode.dark;
+      await pref.setBool(LoginScreenState.THEME_KEY, true);
+    }
+    else {
+      themeNotifier.value = ThemeMode.light;
+      await pref.setBool(LoginScreenState.THEME_KEY, false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
 
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+    return Scaffold(
+      backgroundColor: Theme
+          .of(context)
+          .scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
@@ -79,13 +94,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       const SizedBox(height: 4),
-                      const Text(
+                       Text(
                         'Dashboard',
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF1A1A2E),
-                        ),
+                          color: isDark ? Colors.white : const Color(0xFF1A1A2E),                        ),
                       ),
                     ],
                   ),
@@ -113,6 +127,23 @@ class _HomeScreenState extends State<HomeScreen> {
                           onPressed: _logout,
                         ),
                       ),
+                      SizedBox(width: 10),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF6A1B29).withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(onPressed: () {
+                          setState(() {
+                            _toggleTheme();
+                          });
+                        }, icon: Icon(
+                          themeNotifier.value == ThemeMode.dark
+                              ? Icons.dark_mode
+                              : Icons.light_mode,
+                          color: const Color(0xFF6A1B29),
+                        ),),
+                      )
                     ],
                   ),
                 ],
@@ -191,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       child: Card(
                         clipBehavior: Clip.antiAlias,
-                        color: Color(0xFF5A1B24),
+                          color: const Color(0xFF5A1B24),
                         child: ListTile(
                           leading: CircleAvatar(
                               backgroundColor: Colors.greenAccent,
@@ -212,7 +243,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               IconButton(onPressed: () {
                                 Navigator.push(context, MaterialPageRoute(
                                     builder: (context) =>
-                                        Adduser(user: userList[index]),)).then((value) => loadUser());
+                                        Adduser(user: userList[index]))).then((
+                                    value) => loadUser());
                               },
                                   icon: const Icon(
                                       Icons.edit, color: Colors.greenAccent)),
