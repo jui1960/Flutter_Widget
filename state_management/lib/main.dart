@@ -14,10 +14,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MultiProvider(providers: [
+      ChangeNotifierProvider(create: (context) => CounterProvider()),
+      ChangeNotifierProvider(create: (context) => ListMapProvider())
+
+    ],
+    child: MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      /* home: ChangeNotifierProvider(
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: ListPage(),
+    ),);
+
+    /*
+    * /* home: ChangeNotifierProvider(
         create: (_) => CounterProvider(),
         child: MyHomePage(),
       ),*/
@@ -31,8 +43,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => ListMapProvider())
 
       ],
-      child: ListPage(),),
-    );
+      child: ListPage()
+    *
+    *
+    * */
+
+
   }
 }
 

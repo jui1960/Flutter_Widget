@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:state_management/AddScreen.dart';
 import 'package:state_management/list_map_provider.dart';
 
 class ListPage extends StatelessWidget {
+  static const String NAMEKEY = 'name';
+  static const String ROLLKEY = 'roll';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,8 +22,8 @@ class ListPage extends StatelessWidget {
                       color: Colors.grey[200],
                       elevation: 5,
                       child: ListTile(
-                        title: Text(allData[index]['name']),
-                        subtitle: Text(allData[index]['roll']),
+                        title: Text(allData[index][NAMEKEY]),
+                        subtitle: Text(allData[index][ROLLKEY]),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
 
@@ -40,10 +43,7 @@ class ListPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          context.read<ListMapProvider>().addData({
-            "name": "Jui",
-            "roll": "53",
-          });
+         Navigator.push(context, MaterialPageRoute(builder: (context) => Addscreen()));
         },
       ),
     );
