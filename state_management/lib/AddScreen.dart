@@ -5,13 +5,21 @@ import 'package:state_management/List_page.dart';
 import 'list_map_provider.dart';
 
 class Addscreen extends StatelessWidget {
-  var nameController = TextEditingController();
-  var rollController = TextEditingController();
+  final bool isEdit;
+  final int? index;
+  final Map<String, dynamic>? oldData;
+
+  Addscreen({this.isEdit = false, this.index, this.oldData});
+
+  final nameController = TextEditingController();
+  final rollController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    nameController.text = oldData?[ListPage.NAMEKEY] ?? '';
+    rollController.text = oldData?[ListPage.ROLLKEY] ?? '';
     return Scaffold(
-      appBar: AppBar(title: Text('Add Data')),
+      appBar: AppBar(title: Text(isEdit ? 'Update Data' : 'Add Data')),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -49,8 +57,14 @@ class Addscreen extends StatelessWidget {
                      ListPage.NAMEKEY: name,
                      ListPage.ROLLKEY: roll,
                    };
-
-                    context.read<ListMapProvider>().addData(newData);
+                   if (isEdit && index != null) {
+                     context.read<ListMapProvider>().updateData(
+                       index!,
+                       newData,
+                     );
+                   } else {
+                     context.read<ListMapProvider>().addData(newData);
+                   }
 
                     Navigator.pop(context);
                   } else {
@@ -59,8 +73,8 @@ class Addscreen extends StatelessWidget {
                     );
                   }
                 },
-                child: Text('Add', style: TextStyle(color: Colors.white)),
-              ),
+                child: Text(isEdit ? 'Update' : 'Add',
+                    style: TextStyle(color: Colors.white)),),
             ],
           ),
         ),

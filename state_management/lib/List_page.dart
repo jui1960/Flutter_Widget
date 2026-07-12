@@ -28,9 +28,26 @@ class ListPage extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
 
                           children: [
-                            Icon(Icons.edit, color: Colors.blue),
-                            SizedBox(width: 10),
-                            Icon(Icons.delete, color: Colors.red),
+                            IconButton(onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Addscreen(
+                                    isEdit: true,
+                                    index: index,
+                                    oldData: allData[index],
+                                  ),
+                                ),
+                              );
+                            }, icon: Icon(
+                              Icons.edit, color: Colors.greenAccent,)),
+                            SizedBox(width: 10,),
+                            IconButton(onPressed: () {
+                              context.read<ListMapProvider>().deleteData(index);
+                            }, icon: Icon(
+                              Icons.delete, color: Colors.red,))
+
+
                           ],
                         ),
                       ),
