@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:state_management/List_page.dart';
 import 'package:state_management/list_map_provider.dart';
+import 'package:state_management/theme_provider.dart';
 
 import 'counter_provider.dart';
 
@@ -16,16 +17,29 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(providers: [
       ChangeNotifierProvider(create: (context) => CounterProvider()),
-      ChangeNotifierProvider(create: (context) => ListMapProvider())
+      ChangeNotifierProvider(create: (context) => ListMapProvider()),
+      ChangeNotifierProvider(create: (context) => ThemeProvider())
 
     ],
-    child: MaterialApp(
-      title: 'State Management',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: ListPage(),
+    child: Builder(
+      builder: (context) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'State Management',
+
+
+          themeMode: context.watch<ThemeProvider>().getThemeValue()
+              ? ThemeMode.dark
+              : ThemeMode.light,
+          darkTheme: ThemeData.dark(),
+          theme: ThemeData(
+            brightness: Brightness.light,
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          home: ListPage(),
+        );
+      }
     ),);
 
     /*
