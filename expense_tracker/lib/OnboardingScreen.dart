@@ -1,5 +1,8 @@
 import 'package:expense_tracker/HomeScreen.dart';
+import 'package:expense_tracker/SignInScreen.dart';
+import 'package:expense_tracker/SignUpScreen.dart';
 import 'package:flutter/material.dart';
+import 'HomeScreen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -42,7 +45,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         elevation: 0,
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>SignInScreen()));
+            },
             child: const Text(
               "Sign in",
               style: TextStyle(
@@ -139,7 +144,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Homescreen(),
+                                builder: (context) => SignUpScreen(),
                               ),
                             );
                           } else {
