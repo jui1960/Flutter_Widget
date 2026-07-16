@@ -1,4 +1,6 @@
+import 'package:expense_tracker/main.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'SignUpScreen.dart';
 import 'homescreen.dart';
@@ -132,7 +134,6 @@ class _SignInScreenState extends State<SignInScreen> {
                       hintStyle: TextStyle(color: Colors.grey.shade400),
                       filled: true,
                       fillColor: Colors.white,
-                      // ইনপুট ফিল্ড হোয়াইট
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
                         borderSide: BorderSide.none,
@@ -184,15 +185,44 @@ class _SignInScreenState extends State<SignInScreen> {
                 SizedBox(
                   width: double.infinity,
                   height: 56,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Homescreen(),
+                  child: ElevatedButton(onPressed: () async {
+                    var email = _emailController.text.trim();
+                    var password = _passwordController.text;
+
+                    if (email.isNotEmpty && password.isNotEmpty) {
+                      var pref = await SharedPreferences.getInstance();
+
+                      String? savedEmail = pref.getString(SignUpScreenState
+                          .EMAILKEY);
+                      String? savedPassword = pref.getString(SignUpScreenState
+                          .PASSWORDKEY);
+                      if (email == savedEmail && password == savedPassword) {
+                        pref.setBool(SplashScreenState.ONBOARDINGKEY, false);
+                        pref.setBool(SplashScreenState.LOGINKEY, true);
+
+                        if (!context.mounted) return;
+                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                            builder: (context) => Homescreen()),
+                                (route) => false);
+                      }
+                      else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Invalid email or password'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    }
+                    else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please enter email and password'),
                         ),
-                        (route) => false,
                       );
+                    }
+
+
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2ECC71),

@@ -1,4 +1,6 @@
+import 'package:expense_tracker/main.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'SignInScreen.dart';
 import 'homescreen.dart';
@@ -7,13 +9,18 @@ class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<SignUpScreen> createState() => SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class SignUpScreenState extends State<SignUpScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
+
+  static const String NAMEKEY = "name";
+  static const String EMAILKEY = "email";
+  static const String PASSWORDKEY = "password";
 
   @override
   Widget build(BuildContext context) {
@@ -188,14 +195,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   width: double.infinity,
                   height: 56,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
+                    var name = _nameController.text;
+                    var email = _emailController.text;
+                    var password = _passwordController.text;
+
+                    if(name.isNotEmpty && email.isNotEmpty && password.isNotEmpty){
+
+                      var pref = await SharedPreferences.getInstance();
+                      pref.setBool(SplashScreenState.LOGINKEY, true);
+                      pref.setBool(SplashScreenState.ONBOARDINGKEY, false);
+
+                      pref.setString(NAMEKEY, name);
+                      pref.setString(EMAILKEY, email);
+                      pref.setString(PASSWORDKEY, password);
+
+
+
+
+                      if(!context.mounted) return;
+
+
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const Homescreen(),
                         ),
-                        (route) => false,
+                            (route) => false,
                       );
+
+                    }
+
+
+
+
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2ECC71),
