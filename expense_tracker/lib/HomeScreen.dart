@@ -18,7 +18,7 @@ class _HomescreenState extends State<Homescreen> {
       appBar: AppBar(
         backgroundColor: Color(0xFF9FE85A),
         elevation: 0,
-        title: const Text("Home Screen"),
+
       ),
       body: Center(
         child: IconButton(

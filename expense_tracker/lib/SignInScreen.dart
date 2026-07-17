@@ -217,7 +217,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Please enter email and password'),
+                          content: Text('Please enter email And password'),
                         ),
                       );
                     }
