@@ -16,6 +16,8 @@ class SignUpScreenState extends State<SignUpScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _obscurePassword = true;
+
 
 
   static const String NAMEKEY = "name";
@@ -169,7 +171,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                   borderRadius: BorderRadius.circular(16),
                   child: TextField(
                     controller: _passwordController,
-                    obscureText: true,
+                    obscureText: _obscurePassword,
                     decoration: InputDecoration(
                       hintText: "Create a password",
                       hintStyle: TextStyle(color: Colors.grey.shade400),
@@ -186,6 +188,20 @@ class SignUpScreenState extends State<SignUpScreen> {
                           width: 2,
                         ),
                       ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: Colors.grey.shade400,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
+
                     ),
                   ),
                 ),
