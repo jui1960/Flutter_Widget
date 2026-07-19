@@ -27,10 +27,7 @@ class _SignInScreenState extends State<SignInScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFE8F8F0),
-              Colors.white,
-            ],
+            colors: [Color(0xFFE8F8F0), Colors.white],
           ),
         ),
         child: SafeArea(
@@ -163,13 +160,10 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 const SizedBox(height: 12),
 
-
                 Align(
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
-                    onTap: () {
-
-                    },
+                    onTap: () {},
                     child: const Text(
                       "Forgot Password?",
                       style: TextStyle(
@@ -185,44 +179,47 @@ class _SignInScreenState extends State<SignInScreen> {
                 SizedBox(
                   width: double.infinity,
                   height: 56,
-                  child: ElevatedButton(onPressed: () async {
-                    var email = _emailController.text.trim();
-                    var password = _passwordController.text;
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      var email = _emailController.text.trim();
+                      var password = _passwordController.text;
 
-                    if (email.isNotEmpty && password.isNotEmpty) {
-                      var pref = await SharedPreferences.getInstance();
+                      if (email.isNotEmpty && password.isNotEmpty) {
+                        var pref = await SharedPreferences.getInstance();
 
-                      String? savedEmail = pref.getString(SignUpScreenState
-                          .EMAILKEY);
-                      String? savedPassword = pref.getString(SignUpScreenState
-                          .PASSWORDKEY);
-                      if (email == savedEmail && password == savedPassword) {
-                        pref.setBool(SplashScreenState.ONBOARDINGKEY, false);
-                        pref.setBool(SplashScreenState.LOGINKEY, true);
+                        String? savedEmail = pref.getString(
+                          SignUpScreenState.EMAILKEY,
+                        );
+                        String? savedPassword = pref.getString(
+                          SignUpScreenState.PASSWORDKEY,
+                        );
+                        if (email == savedEmail && password == savedPassword) {
+                         await  pref.setBool(SplashScreenState.ONBOARDINGKEY, false);
+                         await pref.setBool(SplashScreenState.LOGINKEY, true);
 
-                        if (!context.mounted) return;
-                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                            builder: (context) => Homescreen()),
-                                (route) => false);
-                      }
-                      else {
+                          if (!context.mounted) return;
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Homescreen(),
+                            ),
+                            (route) => false,
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Invalid email or password'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Invalid email or password'),
-                            backgroundColor: Colors.red,
+                            content: Text('Please enter email And password'),
                           ),
                         );
                       }
-                    }
-                    else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Please enter email And password'),
-                        ),
-                      );
-                    }
-
-
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2ECC71),

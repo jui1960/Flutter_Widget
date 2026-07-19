@@ -213,18 +213,19 @@ class SignUpScreenState extends State<SignUpScreen> {
                   child: ElevatedButton(
                     onPressed: () async {
                     var name = _nameController.text;
-                    var email = _emailController.text;
-                    var password = _passwordController.text;
+                    var email = _emailController.text.trim();
+                    var password = _passwordController.text.trim();
 
                     if(name.isNotEmpty && email.isNotEmpty && password.isNotEmpty){
 
                       var pref = await SharedPreferences.getInstance();
-                      pref.setBool(SplashScreenState.LOGINKEY, true);
-                      pref.setBool(SplashScreenState.ONBOARDINGKEY, false);
 
-                      pref.setString(NAMEKEY, name);
-                      pref.setString(EMAILKEY, email);
-                      pref.setString(PASSWORDKEY, password);
+
+                      await pref.setString(NAMEKEY, name);
+                      await  pref.setString(EMAILKEY, email);
+                      await  pref.setString(PASSWORDKEY, password);
+                      await pref.setBool(SplashScreenState.LOGINKEY, true);
+                      await pref.setBool(SplashScreenState.ONBOARDINGKEY, false);
 
 
 

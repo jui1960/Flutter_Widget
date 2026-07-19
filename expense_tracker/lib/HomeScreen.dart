@@ -1,6 +1,8 @@
 import 'package:expense_tracker/SignUpScreen.dart';
+import 'package:expense_tracker/ThemeProvider.dart'; // 👈 ১. থিম প্রোভাইডার ইম্পোর্ট করা হলো
 import 'package:expense_tracker/main.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; // 👈 ২. প্রোভাইডার প্যাকেজ ইম্পোর্ট করা হলো
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'SignInScreen.dart';
@@ -13,7 +15,6 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-
   String userName = "user";
 
   @override
@@ -22,14 +23,29 @@ class _HomescreenState extends State<Homescreen> {
     loadUsername();
   }
 
-
-  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Dashboard!"),
         actions: [
+          // 🌟 ৩. থিম চেঞ্জ করার ম্যাজিক বাটন যোগ করা হলো
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, child) {
+              return IconButton(
+                icon: Icon(
+                  // ডার্ক মোড হলে চাঁদের আইকন, লাইট মোড হলে সূর্যের আইকন দেখাবে
+                  themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                ),
+                onPressed: () {
+                  // বাটনে ক্লিক করলে ট্রু থাকলে ফলস হবে, ফলস থাকলে ট্রু হবে
+                  themeProvider.toggleTheme(!themeProvider.isDarkMode);
+                },
+              );
+            },
+          ),
+
+          // আপনার আগের লগআউট বাটনটি যেভাবে ছিল তেমনই আছে
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
@@ -63,7 +79,7 @@ class _HomescreenState extends State<Homescreen> {
               "Welcome to your Expense Tracker",
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey.shade600,
+                color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
               ),
             ),
           ],
@@ -72,11 +88,9 @@ class _HomescreenState extends State<Homescreen> {
     );
   }
 
-  void loadUsername() async{
+  void loadUsername() async {
     final pref = await SharedPreferences.getInstance();
     userName = pref.getString(SignUpScreenState.NAMEKEY) ?? "user";
     setState(() {});
   }
 }
-
-

@@ -1,4 +1,6 @@
+import 'package:expense_tracker/ThemeProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'HomeScreen.dart';
@@ -6,18 +8,53 @@ import 'OnboardingScreen.dart';
 import 'SignInScreen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ThemeProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
+    // 🌟 ১. প্রোভাইডার থেকে কারেন্ট থিম স্টেট রিড করা হচ্ছে
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
 
+      // 🌟 ২. লাইট থিম স্টাইল কনফিগারেশন
+      theme: ThemeData(
+        brightness: Brightness.light,
+        scaffoldBackgroundColor: Colors.white,
+        primaryColor: const Color(0xFF2ECC71),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          elevation: 0,
+        ),
+      ),
+
+      // 🌟 ৩. ডার্ক থিম স্টাইল কনফিগারেশন
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: Colors.grey.shade900,
+        primaryColor: const Color(0xFF2ECC71),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.grey.shade900,
+          foregroundColor: Colors.white,
+          elevation: 0,
+        ),
+      ),
+
+      // 🌟 ৪. কারেন্ট থিম মোড প্রোভাইডার থেকে এখানে অ্যাসাইন করা হলো
+      themeMode: themeProvider.themeMode,
+
+      home: const SplashScreen(),
     );
   }
 }
@@ -32,6 +69,7 @@ class SplashScreen extends StatefulWidget {
 class SplashScreenState extends State<SplashScreen> {
   static const String LOGINKEY = 'isLogin';
   static const String ONBOARDINGKEY = 'isFirstTime';
+  static const String APPTHEME = "isDarkMode";
 
   @override
   void initState() {
@@ -39,9 +77,10 @@ class SplashScreenState extends State<SplashScreen> {
     Navigate();
   }
 
-
   @override
   Widget build(BuildContext context) {
+    // স্প্ল্যাশ স্ক্রিনের ব্যাকগ্রাউন্ড কালার থিমের সাথে ম্যাচ করানোর সুবিধার্থে
+    // হার্ডকোডেড সাদা টেক্সট কালারগুলো একটু ডাইনামিক করা যেতে পারে, তবে আপাতত থিম টেস্ট করার জন্য এটি এভাবেই রাখলাম।
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -50,10 +89,7 @@ class SplashScreenState extends State<SplashScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFE8F8F0),
-              Colors.white,
-            ],
+            colors: [Color(0xFFE8F8F0), Colors.white],
           ),
         ),
         child: Center(
@@ -84,7 +120,6 @@ class SplashScreenState extends State<SplashScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-
               const Text(
                 "Expense Tracker",
                 style: TextStyle(
@@ -95,7 +130,6 @@ class SplashScreenState extends State<SplashScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-
               Text(
                 "Smart Way to Manage Money",
                 style: TextStyle(
@@ -105,8 +139,6 @@ class SplashScreenState extends State<SplashScreen> {
                 ),
               ),
               const SizedBox(height: 48),
-
-              // থিম কালারের সাথে মিলানো সার্কুলার লোডার
               const SizedBox(
                 width: 24,
                 height: 24,
@@ -123,7 +155,7 @@ class SplashScreenState extends State<SplashScreen> {
   }
 
   void Navigate() async {
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 3));
 
     final pref = await SharedPreferences.getInstance();
     final bool isFirstTime = pref.getBool(ONBOARDINGKEY) ?? true;
