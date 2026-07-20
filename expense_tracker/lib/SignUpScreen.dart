@@ -18,27 +18,28 @@ class SignUpScreenState extends State<SignUpScreen> {
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
 
-
-
   static const String NAMEKEY = "name";
   static const String EMAILKEY = "email";
   static const String PASSWORDKEY = "password";
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final fieldBg = isDark ? Colors.grey.shade800 : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black;
+
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFE8F8F0),
-              Colors.white,
-            ],
-          ),
+        decoration: BoxDecoration(
+          gradient: isDark
+              ? null
+              : const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFFE8F8F0), Colors.white],
+                ),
         ),
         child: SafeArea(
           child: SingleChildScrollView(
@@ -48,11 +49,7 @@ class SignUpScreenState extends State<SignUpScreen> {
               children: [
                 const SizedBox(height: 10),
                 IconButton(
-                  icon: const Icon(
-                    Icons.arrow_back_ios,
-                    color: Colors.black,
-                    size: 20,
-                  ),
+                  icon: Icon(Icons.arrow_back_ios, color: textColor, size: 20),
                   onPressed: () => Navigator.pop(context),
                 ),
                 const SizedBox(height: 20),
@@ -67,12 +64,12 @@ class SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                const Text(
+                Text(
                   "Create Account",
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: textColor,
                     letterSpacing: -0.5,
                   ),
                 ),
@@ -83,26 +80,27 @@ class SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 40),
 
-                const Text(
+                Text(
                   "Full Name",
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 15,
-                    color: Colors.black,
+                    color: textColor,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Material(
-                  elevation: 4,
+                  elevation: isDark ? 1 : 4,
                   shadowColor: Colors.black.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(16),
                   child: TextField(
                     controller: _nameController,
+                    style: TextStyle(color: textColor),
                     decoration: InputDecoration(
                       hintText: "Enter your name",
                       hintStyle: TextStyle(color: Colors.grey.shade400),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: fieldBg,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
                         borderSide: BorderSide.none,
@@ -118,28 +116,30 @@ class SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-
-                const Text(
+                Text(
                   "Email Address",
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 15,
-                    color: Colors.black,
+                    color: textColor,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Material(
-                  elevation: 4,
+                  elevation: isDark ? 1 : 4,
                   shadowColor: Colors.black.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(16),
                   child: TextField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
+                    style: TextStyle(color: textColor),
+
                     decoration: InputDecoration(
                       hintText: "Enter your email",
-                      hintStyle: TextStyle(color: Colors.grey.shade400),
+                      hintStyle: TextStyle(color: Colors.grey.shade500),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: fieldBg,
+
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
                         borderSide: BorderSide.none,
@@ -156,27 +156,28 @@ class SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                const Text(
+                Text(
                   "Password",
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 15,
-                    color: Colors.black,
+                    color: textColor, // 🌟 ডাইনামিক কালার
                   ),
                 ),
                 const SizedBox(height: 8),
                 Material(
-                  elevation: 4,
+                  elevation: isDark ? 1 : 4,
                   shadowColor: Colors.black.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(16),
                   child: TextField(
                     controller: _passwordController,
                     obscureText: _obscurePassword,
+                    style: TextStyle(color: textColor),
                     decoration: InputDecoration(
                       hintText: "Create a password",
-                      hintStyle: TextStyle(color: Colors.grey.shade400),
+                      hintStyle: TextStyle(color: Colors.grey.shade500),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: fieldBg,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
                         borderSide: BorderSide.none,
@@ -201,7 +202,6 @@ class SignUpScreenState extends State<SignUpScreen> {
                           });
                         },
                       ),
-
                     ),
                   ),
                 ),
@@ -212,40 +212,34 @@ class SignUpScreenState extends State<SignUpScreen> {
                   height: 56,
                   child: ElevatedButton(
                     onPressed: () async {
-                    var name = _nameController.text;
-                    var email = _emailController.text.trim();
-                    var password = _passwordController.text.trim();
+                      var name = _nameController.text;
+                      var email = _emailController.text.trim();
+                      var password = _passwordController.text.trim();
 
-                    if(name.isNotEmpty && email.isNotEmpty && password.isNotEmpty){
+                      if (name.isNotEmpty &&
+                          email.isNotEmpty &&
+                          password.isNotEmpty) {
+                        var pref = await SharedPreferences.getInstance();
 
-                      var pref = await SharedPreferences.getInstance();
+                        await pref.setString(NAMEKEY, name);
+                        await pref.setString(EMAILKEY, email);
+                        await pref.setString(PASSWORDKEY, password);
+                        await pref.setBool(SplashScreenState.LOGINKEY, true);
+                        await pref.setBool(
+                          SplashScreenState.ONBOARDINGKEY,
+                          false,
+                        );
 
+                        if (!context.mounted) return;
 
-                      await pref.setString(NAMEKEY, name);
-                      await  pref.setString(EMAILKEY, email);
-                      await  pref.setString(PASSWORDKEY, password);
-                      await pref.setBool(SplashScreenState.LOGINKEY, true);
-                      await pref.setBool(SplashScreenState.ONBOARDINGKEY, false);
-
-
-
-
-                      if(!context.mounted) return;
-
-
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Homescreen(),
-                        ),
-                            (route) => false,
-                      );
-
-                    }
-
-
-
-
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Homescreen(),
+                          ),
+                          (route) => false,
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2ECC71),
@@ -272,7 +266,9 @@ class SignUpScreenState extends State<SignUpScreen> {
                     Text(
                       "Already have an account? ",
                       style: TextStyle(
-                        color: Colors.grey.shade600,
+                        color: isDark
+                            ? Colors.grey.shade400
+                            : Colors.grey.shade600,
                         fontSize: 15,
                       ),
                     ),

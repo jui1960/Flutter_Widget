@@ -21,13 +21,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 🌟 ১. প্রোভাইডার থেকে কারেন্ট থিম স্টেট রিড করা হচ্ছে
+
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      // 🌟 ২. লাইট থিম স্টাইল কনফিগারেশন
       theme: ThemeData(
         brightness: Brightness.light,
         scaffoldBackgroundColor: Colors.white,
@@ -39,7 +38,6 @@ class MyApp extends StatelessWidget {
         ),
       ),
 
-      // 🌟 ৩. ডার্ক থিম স্টাইল কনফিগারেশন
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Colors.grey.shade900,
@@ -51,7 +49,6 @@ class MyApp extends StatelessWidget {
         ),
       ),
 
-      // 🌟 ৪. কারেন্ট থিম মোড প্রোভাইডার থেকে এখানে অ্যাসাইন করা হলো
       themeMode: themeProvider.themeMode,
 
       home: const SplashScreen(),
@@ -79,8 +76,7 @@ class SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // স্প্ল্যাশ স্ক্রিনের ব্যাকগ্রাউন্ড কালার থিমের সাথে ম্যাচ করানোর সুবিধার্থে
-    // হার্ডকোডেড সাদা টেক্সট কালারগুলো একটু ডাইনামিক করা যেতে পারে, তবে আপাতত থিম টেস্ট করার জন্য এটি এভাবেই রাখলাম।
+
     return Scaffold(
       body: Container(
         width: double.infinity,
