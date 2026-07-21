@@ -37,6 +37,8 @@ dependencies:
   shared_preferences: ^2.5.5
   flutter_launcher_icons: ^0.14.4
   provider: ^6.1.2
+  sqflite:
+  path_provider:
 
 dev_dependencies:
   flutter_test:
