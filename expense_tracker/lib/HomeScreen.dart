@@ -1,3 +1,4 @@
+import 'package:expense_tracker/ProfileScreen.dart';
 import 'package:expense_tracker/SignUpScreen.dart';
 import 'package:expense_tracker/ThemeProvider.dart';
 import 'package:expense_tracker/main.dart';
@@ -7,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'AddScreen.dart';
 import 'DbHelper.dart';
+import 'DetailsScreen.dart';
 import 'SignInScreen.dart';
 
 class Homescreen extends StatefulWidget {
@@ -43,7 +45,6 @@ class _HomescreenState extends State<Homescreen> {
         builder: (context, snapshot) {
           List<Map<String, dynamic>> expenseList = snapshot.data ?? [];
 
-          // 💰 টোটাল খরচ ক্যালকুলেট করা
           double totalSpend = 0;
           for (var item in expenseList) {
             double price =
@@ -56,16 +57,16 @@ class _HomescreenState extends State<Homescreen> {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.only(
-                  top: 45,
-                  left: 24,
+                  top: 20,
+                  left: 20,
                   right: 24,
-                  bottom: 32,
+                  bottom: 25,
                 ),
                 decoration: BoxDecoration(
                   color: topCardColor,
                   borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(32),
-                    bottomRight: Radius.circular(32),
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30),
                   ),
                 ),
                 child: Column(
@@ -127,7 +128,7 @@ class _HomescreenState extends State<Homescreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 20),
                     Text(
                       "TODAY IS",
                       style: TextStyle(
@@ -146,7 +147,7 @@ class _HomescreenState extends State<Homescreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 20),
                     Text(
                       "THIS MONTH'S SPEND",
                       style: TextStyle(
@@ -157,12 +158,11 @@ class _HomescreenState extends State<Homescreen> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    // 💸 ডাইনামিক টোটাল খরচ
                     Text(
                       "\$${totalSpend.toStringAsFixed(2)}",
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 42,
+                        fontSize: 35,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -203,10 +203,9 @@ class _HomescreenState extends State<Homescreen> {
                 ),
               ),
 
-              // 📝 বডি ও ট্রানজেকশন লিস্ট
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(24.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -217,7 +216,7 @@ class _HomescreenState extends State<Homescreen> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.all(18.0),
+                          padding: const EdgeInsets.all(10.0),
                           child: Row(
                             children: [
                               Container(
@@ -231,11 +230,11 @@ class _HomescreenState extends State<Homescreen> {
                                   color: primaryColor,
                                 ),
                               ),
-                              const SizedBox(width: 16),
+                              const SizedBox(width: 17),
                               Text(
                                 "Spending Wallet",
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                   color: textColor,
                                 ),
@@ -244,12 +243,12 @@ class _HomescreenState extends State<Homescreen> {
                               Text(
                                 "\$5,631.22",
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                   color: textColor,
                                 ),
                               ),
-                              const SizedBox(width: 4),
+                              const SizedBox(width: 5),
                               Icon(
                                 Icons.chevron_right,
                                 color: subTextColor,
@@ -261,7 +260,6 @@ class _HomescreenState extends State<Homescreen> {
                       ),
                       const SizedBox(height: 24),
 
-                      // রিসেন্ট ট্রানজেকশন হেডার
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -286,9 +284,7 @@ class _HomescreenState extends State<Homescreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
 
-                      // 🔄 SQLite থেকে ডেটা রেন্ডারিং
                       if (snapshot.connectionState == ConnectionState.waiting)
                         const Center(child: CircularProgressIndicator())
                       else if (expenseList.isEmpty)
@@ -311,15 +307,59 @@ class _HomescreenState extends State<Homescreen> {
                           itemCount: expenseList.length,
                           itemBuilder: (context, index) {
                             var item = expenseList[index];
-                            return _buildTransactionItem(
-                              icon: Icons.receipt_long,
-                              iconBg: primaryColor.withOpacity(0.15),
-                              iconColor: primaryColor,
-                              title: item[DbHelper.COLUMN_TITLE] ?? "",
-                              date: item[DbHelper.COLUMN_DATE] ?? "",
-                              amount: "-\$${item[DbHelper.COLUMN_PRICE]}",
-                              textColor: textColor,
-                              subTextColor: subTextColor,
+                            return InkWell(
+                              borderRadius: BorderRadius.circular(16),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailsScreen(
+                                      sno: item[DbHelper.COLUMN_SERIAL_NO],
+                                      title: item[DbHelper.COLUMN_TITLE] ?? "",
+                                      price: item[DbHelper.COLUMN_PRICE] ?? "",
+                                      details: item[DbHelper.COLUMN_DESC] ?? "",
+                                      date: item[DbHelper.COLUMN_DATE] ?? "",
+                                    ),
+                                  ),
+                                ).then((isDataChanged) {
+                                  if (isDataChanged == true) {
+                                    setState(() {});
+                                  }
+                                });
+                              },
+
+                              child: _buildTransactionItem(
+                                sno: item[DbHelper.COLUMN_SERIAL_NO],
+                                icon: Icons.receipt_long,
+                                iconBg: primaryColor.withOpacity(0.15),
+                                iconColor: primaryColor,
+                                title: item[DbHelper.COLUMN_TITLE] ?? "",
+                                date: item[DbHelper.COLUMN_DATE] ?? "",
+                                amount: "-\$${item[DbHelper.COLUMN_PRICE]}",
+                                textColor: textColor,
+                                subTextColor: subTextColor,
+                                onDelete: () {
+                                  setState(() {});
+                                },
+                                onEdit: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AddScreen(
+                                        sno: item[DbHelper.COLUMN_SERIAL_NO],
+                                        title: item[DbHelper.COLUMN_TITLE],
+                                        price: item[DbHelper.COLUMN_PRICE],
+                                        details: item[DbHelper.COLUMN_DESC],
+                                        date: item[DbHelper.COLUMN_DATE],
+                                      ),
+                                    ),
+                                  ).then((isUpdate) {
+                                    if (isUpdate == true) {
+                                      setState(() {});
+                                    }
+                                  });
+                                },
+                              ),
                             );
                           },
                         ),
@@ -332,7 +372,6 @@ class _HomescreenState extends State<Homescreen> {
         },
       ),
 
-      // ➕ প্লাস বাটনে ক্লিক করে AddScreen-এ যাওয়া এবং ব্যাক আসলে স্ক্রিন আপডেট করা
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           bool? isAdded = await Navigator.push(
@@ -341,7 +380,7 @@ class _HomescreenState extends State<Homescreen> {
           );
 
           if (isAdded == true) {
-            setState(() {}); // নতুন ডেটা সেভ হয়ে আসলে স্ক্রিন রিফ্রেশ হবে
+            setState(() {});
           }
         },
         backgroundColor: Colors.black,
@@ -350,7 +389,6 @@ class _HomescreenState extends State<Homescreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-      // বটম নেভিগেশন বার
       bottomNavigationBar: BottomAppBar(
         color: cardColor,
         shape: const CircularNotchedRectangle(),
@@ -375,7 +413,12 @@ class _HomescreenState extends State<Homescreen> {
               ),
               IconButton(
                 icon: Icon(Icons.person, color: subTextColor),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfileScreen()),
+                  );
+                },
               ),
             ],
           ),
@@ -384,8 +427,8 @@ class _HomescreenState extends State<Homescreen> {
     );
   }
 
-  // ট্রানজেকশন আইটেম উইজেট
   Widget _buildTransactionItem({
+    required int sno,
     required IconData icon,
     required Color iconBg,
     required Color iconColor,
@@ -394,44 +437,136 @@ class _HomescreenState extends State<Homescreen> {
     required String amount,
     required Color textColor,
     required Color subTextColor,
+    required VoidCallback onDelete,
+    required VoidCallback onEdit,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundColor: iconBg,
-            radius: 22,
-            child: Icon(icon, color: iconColor, size: 20),
-          ),
-          const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: Card(
+        elevation: 3,
+        shadowColor: Colors.black26,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 5.0),
+          child: Row(
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: textColor,
+              CircleAvatar(
+                backgroundColor: iconBg,
+                radius: 20,
+                child: Icon(icon, color: iconColor, size: 20),
+              ),
+              const SizedBox(width: 12),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: textColor,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      date,
+                      style: TextStyle(fontSize: 12, color: subTextColor),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(date, style: TextStyle(fontSize: 13, color: subTextColor)),
+
+              const SizedBox(width: 8),
+
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    amount,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.redAccent,
+                    ),
+                  ),
+
+                  const SizedBox(height: 6),
+
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      InkWell(
+                        onTap: onEdit,
+                        borderRadius: BorderRadius.circular(20),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 4.0,
+                            vertical: 2.0,
+                          ),
+                          child: Icon(Icons.edit, size: 16, color: Colors.blue),
+                        ),
+                      ),
+
+                      const SizedBox(width: 4),
+
+                      InkWell(
+                        onTap: () async {
+                          bool? confirm = await showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text("Delete Expense"),
+                              content: const Text(
+                                "Are you sure you want to delete this?",
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, false),
+                                  child: const Text("Cancel"),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, true),
+                                  child: const Text(
+                                    "Delete",
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+
+                          if (confirm == true) {
+                            bool isSuccess = await DbHelper.getInstance
+                                .deleteExpense(sno: sno);
+                            if (isSuccess) {
+                              onDelete();
+                            }
+                          }
+                        },
+                        borderRadius: BorderRadius.circular(20),
+                        child: const Padding(
+                          padding: EdgeInsets.only(
+                            left: 4.0,
+                            top: 2.0,
+                            bottom: 2.0,
+                          ),
+                          child: Icon(
+                            Icons.delete,
+                            size: 16,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ],
           ),
-          const Spacer(),
-          Text(
-            amount,
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-              color: Colors.redAccent,
-            ),
-          ),
-          const SizedBox(width: 4),
-          Icon(Icons.chevron_right, color: subTextColor, size: 18),
-        ],
+        ),
       ),
     );
   }
