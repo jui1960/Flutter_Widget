@@ -2,8 +2,8 @@ import 'package:expense_tracker/main.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'HomeScreen.dart';
 import 'SignInScreen.dart';
-import 'homescreen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -23,6 +23,14 @@ class SignUpScreenState extends State<SignUpScreen> {
   static const String PASSWORDKEY = "password";
 
   @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final fieldBg = isDark ? Colors.grey.shade800 : Colors.white;
@@ -36,10 +44,10 @@ class SignUpScreenState extends State<SignUpScreen> {
           gradient: isDark
               ? null
               : const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Color(0xFFE8F8F0), Colors.white],
-                ),
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFE8F8F0), Colors.white],
+          ),
         ),
         child: SafeArea(
           child: SingleChildScrollView(
@@ -133,13 +141,11 @@ class SignUpScreenState extends State<SignUpScreen> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     style: TextStyle(color: textColor),
-
                     decoration: InputDecoration(
                       hintText: "Enter your email",
                       hintStyle: TextStyle(color: Colors.grey.shade500),
                       filled: true,
                       fillColor: fieldBg,
-
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
                         borderSide: BorderSide.none,
@@ -161,7 +167,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 15,
-                    color: textColor, // 🌟 ডাইনামিক কালার
+                    color: textColor,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -224,6 +230,9 @@ class SignUpScreenState extends State<SignUpScreen> {
                         await pref.setString(NAMEKEY, name);
                         await pref.setString(EMAILKEY, email);
                         await pref.setString(PASSWORDKEY, password);
+                        // 🟢 HomeScreen-এ যাতে এই ইমেইলটা পাই
+                        await pref.setString('user_email_key', email);
+
                         await pref.setBool(SplashScreenState.LOGINKEY, true);
                         await pref.setBool(
                           SplashScreenState.ONBOARDINGKEY,
@@ -235,9 +244,15 @@ class SignUpScreenState extends State<SignUpScreen> {
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const Homescreen(),
+                            builder: (context) => const HomeScreen(),
                           ),
-                          (route) => false,
+                              (route) => false,
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Please fill in all fields'),
+                          ),
                         );
                       }
                     },

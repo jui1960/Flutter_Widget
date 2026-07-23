@@ -2,8 +2,8 @@ import 'package:expense_tracker/main.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'HomeScreen.dart';
 import 'SignUpScreen.dart';
-import 'homescreen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -27,9 +27,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
     final fieldBackgroundColor = isDark ? Colors.grey.shade800 : Colors.white;
-
     final textColor = isDark ? Colors.white : Colors.black;
 
     return Scaffold(
@@ -208,18 +206,26 @@ class _SignInScreenState extends State<SignInScreen> {
                       if (email.isNotEmpty && password.isNotEmpty) {
                         var pref = await SharedPreferences.getInstance();
 
-                        String? savedEmail = pref.getString(SignUpScreenState.EMAILKEY);
-                        String? savedPassword = pref.getString(SignUpScreenState.PASSWORDKEY);
+                        String? savedEmail =
+                        pref.getString(SignUpScreenState.EMAILKEY);
+                        String? savedPassword =
+                        pref.getString(SignUpScreenState.PASSWORDKEY);
 
                         if (email == savedEmail && password == savedPassword) {
-                          await pref.setBool(SplashScreenState.ONBOARDINGKEY, false);
+                          await pref.setBool(
+                            SplashScreenState.ONBOARDINGKEY,
+                            false,
+                          );
                           await pref.setBool(SplashScreenState.LOGINKEY, true);
+
+                          // 🟢 HomeScreen-এর সাথে মিলিয়ে user_email_key তে সেভ করা হলো
+                          await pref.setString('user_email_key', email);
 
                           if (!context.mounted) return;
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const Homescreen(),
+                              builder: (context) => const HomeScreen(),
                             ),
                                 (route) => false,
                           );
@@ -264,7 +270,9 @@ class _SignInScreenState extends State<SignInScreen> {
                     Text(
                       "Don't have an account? ",
                       style: TextStyle(
-                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                        color: isDark
+                            ? Colors.grey.shade400
+                            : Colors.grey.shade600,
                         fontSize: 15,
                       ),
                     ),

@@ -8,6 +8,7 @@ class DetailsScreen extends StatefulWidget {
   final String price;
   final String details;
   final String date;
+  final String userEmail;
 
   const DetailsScreen({
     super.key,
@@ -16,6 +17,7 @@ class DetailsScreen extends StatefulWidget {
     required this.price,
     required this.details,
     required this.date,
+    required this.userEmail,
   });
 
   @override
@@ -128,6 +130,7 @@ class DetailsScreenState extends State<DetailsScreen> {
                             price: widget.price,
                             details: widget.details,
                             date: widget.date,
+                            userEmail: widget.userEmail,
                           ),
                         ),
                       ).then((isUpdated) {

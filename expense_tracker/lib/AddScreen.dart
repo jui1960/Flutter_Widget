@@ -7,6 +7,7 @@ class AddScreen extends StatefulWidget {
   final String? price;
   final String? details;
   final String? date;
+  final String userEmail;
 
   const AddScreen({
     super.key,
@@ -15,6 +16,7 @@ class AddScreen extends StatefulWidget {
     this.price,
     this.details,
     this.date,
+    required this.userEmail,
   });
 
   @override
@@ -68,9 +70,7 @@ class AddScreenState extends State<AddScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFF2ECC71),
-            ),
+            colorScheme: const ColorScheme.light(primary: Color(0xFF2ECC71)),
           ),
           child: child!,
         );
@@ -96,7 +96,10 @@ class AddScreenState extends State<AddScreen> {
       appBar: AppBar(
         title: Text(
           isEditMode ? "Edit Expense" : "Add New Expense",
-          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         centerTitle: true,
         backgroundColor: primaryColor,
@@ -163,18 +166,27 @@ class AddScreenState extends State<AddScreen> {
                       onTap: () => _selectDate(context),
                       borderRadius: BorderRadius.circular(12),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
                         decoration: BoxDecoration(
                           color: primaryColor.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: primaryColor.withOpacity(0.3)),
+                          border: Border.all(
+                            color: primaryColor.withOpacity(0.3),
+                          ),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               children: [
-                                Icon(Icons.calendar_month, color: primaryColor, size: 22),
+                                Icon(
+                                  Icons.calendar_month,
+                                  color: primaryColor,
+                                  size: 22,
+                                ),
                                 const SizedBox(width: 12),
                                 Text(
                                   "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
@@ -218,7 +230,9 @@ class AddScreenState extends State<AddScreen> {
                 ),
                 onPressed: _saveExpense,
                 icon: Icon(
-                  isEditMode ? Icons.check_circle_outline : Icons.add_circle_outline,
+                  isEditMode
+                      ? Icons.check_circle_outline
+                      : Icons.add_circle_outline,
                   color: Colors.white,
                 ),
                 label: Text(
@@ -270,7 +284,10 @@ class AddScreenState extends State<AddScreen> {
             prefixIcon: Icon(icon, color: primaryColor),
             filled: true,
             fillColor: primaryColor.withOpacity(0.05),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(color: Colors.grey.shade300),
@@ -296,35 +313,34 @@ class AddScreenState extends State<AddScreen> {
       if (isEditMode) {
         DbHelper.getInstance
             .updateExpense(
-          mTitle: mTitle,
-          mDes: mDetails,
-          mPrice: mPrice,
-          mDate: mDate,
-          sno: widget.sno!,
-        )
+              mTitle: mTitle,
+              mDes: mDetails,
+              mPrice: mPrice,
+              mDate: mDate,
+              sno: widget.sno!,
+            )
             .then((isSuccess) {
-          if (isSuccess && mounted) {
-            Navigator.pop(context, true);
-          }
-        });
+              if (isSuccess && mounted) {
+                Navigator.pop(context, true);
+              }
+            });
       } else {
         DbHelper.getInstance
             .addExpense(
-          mTitle: mTitle,
-          mDetails: mDetails,
-          mPrice: mPrice,
-          mDate: mDate,
-        )
+              mTitle: mTitle,
+              mDetails: mDetails,
+              mPrice: mPrice,
+              mDate: mDate,
+              mEmail: widget.userEmail,
+            )
             .then((isSuccess) {
-          if (isSuccess && mounted) {
-            Navigator.pop(context, true);
-          }
-        });
+              if (isSuccess && mounted) {
+                Navigator.pop(context, true);
+              }
+            });
       }
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Title & Price are mandatory!"),
           backgroundColor: Colors.redAccent,

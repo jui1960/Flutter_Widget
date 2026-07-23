@@ -13,6 +13,7 @@ class DbHelper {
   static final COLUMN_DESC = 'details';
   static final COLUMN_PRICE = 'price';
   static final COLUMN_DATE = 'date';
+  static final COLUMN_USER_EMAIL = 'user_email';
 
   Database? myDb;
 
@@ -28,7 +29,7 @@ class DbHelper {
 
     return await openDatabase(
       dbpath,
-      version: 1,
+      version: 2,
       onCreate: (db, version) {
         db.execute(
             "CREATE TABLE $TABLE_NAME ("
@@ -36,18 +37,24 @@ class DbHelper {
                 "$COLUMN_TITLE TEXT, "
                 "$COLUMN_DESC TEXT, "
                 "$COLUMN_PRICE TEXT, "
-                "$COLUMN_DATE TEXT)"
+                "$COLUMN_DATE TEXT, "
+                "$COLUMN_USER_EMAIL TEXT)"
         );
+      },
+      onUpgrade: (db, oldVersion, newVersion) {
+        if (oldVersion < 2) {
+          db.execute("ALTER TABLE $TABLE_NAME ADD COLUMN $COLUMN_USER_EMAIL TEXT");
+        }
       },
     );
   }
 
-  // 🟢 ১. ডাটা ইনসার্ট করা (Add Expense)
   Future<bool> addExpense({
     required String mTitle,
     required String mDetails,
     required String mPrice,
     required String mDate,
+    required String mEmail,
   }) async {
     var db = await getDb();
     int rowsEffected = await db.insert(TABLE_NAME, {
@@ -55,13 +62,19 @@ class DbHelper {
       COLUMN_DESC: mDetails,
       COLUMN_PRICE: mPrice,
       COLUMN_DATE: mDate,
+      COLUMN_USER_EMAIL: mEmail,
     });
     return rowsEffected > 0;
   }
 
-  Future<List<Map<String, dynamic>>> fetchAllExpense() async {
+  Future<List<Map<String, dynamic>>> fetchAllExpense({required String email}) async {
     var db = await getDb();
-    List<Map<String, dynamic>> mData = await db.query(TABLE_NAME, orderBy: "$COLUMN_SERIAL_NO DESC");
+    List<Map<String, dynamic>> mData = await db.query(
+      TABLE_NAME,
+      where: "$COLUMN_USER_EMAIL = ?",
+      whereArgs: [email],
+      orderBy: "$COLUMN_SERIAL_NO DESC",
+    );
     return mData;
   }
 

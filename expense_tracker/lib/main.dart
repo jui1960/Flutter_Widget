@@ -2,7 +2,6 @@ import 'package:expense_tracker/ThemeProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'HomeScreen.dart';
 import 'OnboardingScreen.dart';
 import 'SignInScreen.dart';
@@ -21,12 +20,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
       theme: ThemeData(
         brightness: Brightness.light,
         scaffoldBackgroundColor: Colors.white,
@@ -37,7 +34,6 @@ class MyApp extends StatelessWidget {
           elevation: 0,
         ),
       ),
-
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Colors.grey.shade900,
@@ -48,9 +44,7 @@ class MyApp extends StatelessWidget {
           elevation: 0,
         ),
       ),
-
       themeMode: themeProvider.themeMode,
-
       home: const SplashScreen(),
     );
   }
@@ -76,7 +70,6 @@ class SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -166,7 +159,7 @@ class SplashScreenState extends State<SplashScreen> {
     } else if (isLoggin) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const Homescreen()),
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
     } else {
       Navigator.pushReplacement(
