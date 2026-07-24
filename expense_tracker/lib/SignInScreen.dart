@@ -80,7 +80,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     letterSpacing: -0.5,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 6.5),
                 Text(
                   "Sign in to continue managing your money.",
                   style: TextStyle(
