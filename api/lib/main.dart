@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 //post -> create a new post (https:// domain.com/api/post)body parameter ar maddhore details pathano hoi
 //patch,put,delete
 
+
 void main() {
   runApp(const MyApp());
 }
@@ -18,6 +19,8 @@ class MyApp extends StatefulWidget {
 class myAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      body: ,
+    );
   }
 }
