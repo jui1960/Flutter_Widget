@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 //post -> create a new post (https:// domain.com/api/post)body parameter ar maddhore details pathano hoi
 //patch,put,delete
 
+//JSON -> java script object notation, light weight data iterchange format
+
 
 void main() {
   runApp(const MyApp());
